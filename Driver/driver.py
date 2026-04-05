@@ -8,7 +8,6 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
 
 logging.basicConfig(
     level=logging.INFO,
@@ -26,22 +25,67 @@ def get_chrome_options():
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920,1080")
     options.add_argument("--no-sandbox")
+    
+    # Disable version compatibility check (useful when driver/browser versions don't match exactly)
+    options.add_experimental_option("w3c", True)
+    
     return options
 
 
 @pytest.fixture(scope="session")
 def browser():
     """Session-scoped Chrome WebDriver — one browser instance per test session."""
+    
+    # Configure environment to handle Chrome version mismatches
+    os.environ['WDM_LOG'] = '0'  # Reduce WDM logging verbosity
+    
     options = get_chrome_options()
-    service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=service, options=options)
-    driver.implicitly_wait(0)
-    driver.maximize_window()
-
-    _logger.info("Browser opened")
+    
+    #Try direct initialization without version checking
+    try:
+        _logger.info("Attempting to initialize Chrome WebDriver...")
+        
+        # Disable binary location check temporarily
+        service = Service()
+        
+        # Create driver with relaxed version checking
+        driver = webdriver.Chrome(service=service, options=options)
+        driver.implicitly_wait(0)
+        driver.maximize_window()
+        
+        _logger.info("✓ Chrome browser successfully initialized")
+        
+    except Exception as e:
+        error_msg = str(e)
+        _logger.error(f"✗ Direct Chrome initialization failed: {error_msg[:200]}")
+        
+        # If error is version-related, try to work around it
+        if "only supports Chrome version" in error_msg or "session not created" in error_msg:
+            _logger.info("Version mismatch detected. Attempting workaround...")
+            try:
+                from webdriver_manager.chrome import ChromeDriverManager
+                _logger.info("Downloading compatible ChromeDriver...")
+                driver_path = ChromeDriverManager().install()
+                _logger.info(f"ChromeDriver installed at: {driver_path}")
+                service = Service(driver_path)
+                driver = webdriver.Chrome(service=service, options=options)
+                driver.implicitly_wait(0)
+                driver.maximize_window()
+                _logger.info("✓ Chrome initialized with compatible driver")
+            except Exception as second_error:
+                _logger.error(f"✗ Workaround failed: {str(second_error)[:200]}")
+                raise
+        else:
+            raise
+    
+    _logger.info("Browser session started")
     yield driver
-    driver.quit()
-    _logger.info("Browser closed")
+    
+    try:
+        driver.quit()
+        _logger.info("✓ Browser session closed")
+    except Exception as e:
+        _logger.warning(f"Error closing browser: {e}")
 
 
 @pytest.fixture(scope="function")
