@@ -1,7 +1,6 @@
 import pytest
 import logging
-
-from selenium.webdriver.common.by import By
+import time
 
 from Data.DataFeed import DataFeed
 
@@ -26,6 +25,7 @@ class TestRegistration:
         if check_terms:
             page.register.check_tnc_checkbox()
         page.register.click_dapatkan_sekarang_button()
+        time.sleep(0.3)
 
     # =====================================================================
     # Positive Tests
