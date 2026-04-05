@@ -1,6 +1,18 @@
 # ValburyToolsAquityTest
 
-UI automation test suite for the **Valbury** registration flow on the [Trading Tools Acuity campaign page](https://valbury.co.id/campaign/trading-tools-acuity).
+> UI automation test suite for the **Valbury** registration flow on the [Trading Tools Acuity campaign page](https://valbury.co.id/campaign/trading-tools-acuity).
+
+ValburyToolsAquityTest is a Python-based UI automation test suite that validates the registration flow on Valbury's Trading Tools Acuity campaign page.
+
+## Features
+
+- 15 automated test cases covering positive and negative scenarios
+- Page Object Model (POM) architecture for maintainable test code
+- Randomized test data generation using Faker
+- Screenshot capture on test failures
+- HTML test report generation
+- Headless browser support
+- pytest markers for selective test execution
 
 ## Tech Stack
 
@@ -30,7 +42,7 @@ ValburyToolsAquityTest/
 │   └── VerificationPage/
 │       └── VerificationPage.py     # Page Object — post-registration verification
 └── Tests/
-    └── RegisterTest.py             # 15 test cases
+    └── RegisterTest.py            # 15 test cases
 ```
 
 ## Setup
@@ -57,7 +69,7 @@ HEADLESS=1 pytest Tests/RegisterTest.py -v
 # Run by marker
 pytest Tests/RegisterTest.py -v -m positive_test    # happy-path only
 pytest Tests/RegisterTest.py -v -m negative_test     # validation tests only
-pytest Tests/RegisterTest.py -v -m "not registered"  # skip registered-data tests
+pytest Tests/RegisterTest.py -v -m "not registered"   # skip registered-data tests
 
 # Generate HTML report
 pytest Tests/RegisterTest.py -v --html=reports/report.html --self-contained-html
