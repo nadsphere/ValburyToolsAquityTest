@@ -67,9 +67,11 @@ pip install -r requirements.txt
 HEADLESS=1 pytest Tests/RegisterTest.py -v
 
 # Run by marker
-pytest Tests/RegisterTest.py -v -m positive_test    # happy-path only
-pytest Tests/RegisterTest.py -v -m negative_test     # validation tests only
-pytest Tests/RegisterTest.py -v -m "not registered"   # skip registered-data tests
+pytest Tests/RegisterTest.py -v -m positive_test        # happy-path only
+pytest Tests/RegisterTest.py -v -m negative_test        # validation tests only
+pytest Tests/RegisterTest.py -v -m "not registered"     # skip registered-data tests
+pytest Tests/RegisterTest.py -k "test_00[1-5]"          # specific range (runs 001-005)
+pytest Tests/RegisterTest.py::TestRegistration::test_003_failed_register_blank_email # specific test
 
 # Generate HTML report
 pytest Tests/RegisterTest.py -v --html=reports/report.html --self-contained-html
@@ -79,21 +81,21 @@ pytest Tests/RegisterTest.py -v --html=reports/report.html --self-contained-html
 
 | # | Test | Marker | Description |
 |---|------|--------|-------------|
-| 1 | `test_success_register_with_valid_data` | `@positive_test` | Happy-path — valid name, email, phone; expects "Verifikasi" title |
-| 2 | `test_failed_register_blank_name` | `@negative_test` | Blank name — expects "This field is required" |
-| 3 | `test_failed_register_blank_email` | `@negative_test` | Blank email — expects "This field is required" |
-| 4 | `test_failed_register_blank_phone` | `@negative_test` | Blank phone — expects "This field is required" |
-| 5 | `test_failed_register_blank_name_email` | `@negative_test` | Blank name and email — expects both validation errors |
-| 6 | `test_failed_register_blank_name_phone_number` | `@negative_test` | Blank name and phone — expects both validation errors |
-| 7 | `test_failed_register_blank_email_phone_number` | `@negative_test` | Blank email and phone — expects both validation errors |
-| 8 | `test_failed_register_all_blank_fields` | `@negative_test` | All fields blank — expects all three validation errors |
-| 9 | `test_failed_register_with_registered_email` | `@negative_test @registered` | Pre-registered email — expects alert modal |
-| 10 | `test_failed_register_with_registered_phone` | `@negative_test @registered` | Pre-registered phone — expects alert modal |
-| 11 | `test_failed_register_with_less_than_character_phone` | `@negative_test` | Phone < 9 chars — expects "Minimum length 9 character" |
-| 12 | `test_failed_register_with_invalid_phone` | `@negative_test` | Invalid phone number — expects "No. telepon yang anda masukan tidak valid" |
-| 13 | `test_failed_register_with_less_than_character_name` | `@negative_test` | Name < 4 chars — expects "Please fill in using your full name" |
-| 14 | `test_failed_register_with_invalid_name` | `@negative_test` | Invalid name characters — expects "The name you entered is invalid" |
-| 15 | `test_failed_register_invalid_email_format` | `@negative_test` | Invalid email format — expects "The email you entered is invalid" |
+| 001 | `test_001_success_register_with_valid_data` | `@positive_test` | Happy-path — valid name, email, phone; expects "Verifikasi" title |
+| 002 | `test_002_failed_register_blank_name` | `@negative_test` | Blank name — expects "This field is required" |
+| 003 | `test_003_failed_register_blank_email` | `@negative_test` | Blank email — expects "This field is required" |
+| 004 | `test_004_failed_register_blank_phone` | `@negative_test` | Blank phone — expects "This field is required" |
+| 005 | `test_005_failed_register_blank_name_email` | `@negative_test` | Blank name and email — expects both validation errors |
+| 006 | `test_006_failed_register_blank_name_phone_number` | `@negative_test` | Blank name and phone — expects both validation errors |
+| 007 | `test_007_failed_register_blank_email_phone_number` | `@negative_test` | Blank email and phone — expects both validation errors |
+| 008 | `test_008_failed_register_all_blank_fields` | `@negative_test` | All fields blank — expects all three validation errors |
+| 009 | `test_009_failed_register_with_registered_email` | `@negative_test @registered` | Pre-registered email — expects alert modal |
+| 010 | `test_010_failed_register_with_registered_phone` | `@negative_test @registered` | Pre-registered phone — expects alert modal |
+| 011 | `test_011_failed_register_with_less_than_character_phone` | `@negative_test` | Phone < 9 chars — expects "Minimum length 9 character" |
+| 012 | `test_012_failed_register_with_invalid_phone` | `@negative_test` | Invalid phone number — expects "No. telepon yang anda masukan tidak valid" |
+| 013 | `test_013_failed_register_with_less_than_character_name` | `@negative_test` | Name < 4 chars — expects "Please fill in using your full name" |
+| 014 | `test_014_failed_register_with_invalid_name` | `@negative_test` | Invalid name characters — expects "The name you entered is invalid" |
+| 015 | `test_015_failed_register_invalid_email_format` | `@negative_test` | Invalid email format — expects "The email you entered is invalid" |
 
 > Tests marked `@registered` require pre-registered test data. Set `REGISTERED_EMAIL` and `REGISTERED_PHONE` in `Tests/RegisterTest.py` before running.
 

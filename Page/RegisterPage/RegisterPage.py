@@ -71,3 +71,12 @@ class Register:
         ))
         logger.info("Alert modal text: %s", error_registered.text)
         return error_registered.text
+
+    def is_pop_up_visible(self, timeout=5):
+        try:
+            WebDriverWait(self.driver, timeout).until(
+                EC.visibility_of_element_located((By.CSS_SELECTOR, ".modal-dialog.modal-dialog-centered"))
+            )
+            return True
+        except Exception:
+            return False

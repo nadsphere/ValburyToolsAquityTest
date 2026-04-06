@@ -25,10 +25,7 @@ def get_chrome_options():
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920,1080")
     options.add_argument("--no-sandbox")
-    
-    # Disable version compatibility check (useful when driver/browser versions don't match exactly)
-    options.add_experimental_option("w3c", True)
-    
+
     return options
 
 
